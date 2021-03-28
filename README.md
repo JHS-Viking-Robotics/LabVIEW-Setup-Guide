@@ -1,6 +1,8 @@
 # JHS Viking Robotics LabVIEW Setup Guide
 
-This guide will walk you through setting up an FRC LabVIEW development environment on your computer, and configuring Sourcetree to use Git to track your files. There are several steps, but they are all very simple and rely primarily on program defaults so that you don't need to change anything. This guide is intended for JHS Viking Robotics Team 7221, but should work without issue for anyone that is interested! Please note that LabVIEW for FRC is only supported on Windows 10, and as such so is this guide.
+This guide will walk you through setting up an FRC LabVIEW development environment on your computer. This environment will use LabVIEW FRC, CTRE Phoenix libraries, Sourcetree and Git for Windows, and LabVIEW's source control tools (Professional edition only).
+
+There are several steps, but they are all very simple and rely primarily on program defaults so that you don't need to change anything. This guide is intended for JHS Viking Robotics Team 7221, but will also work for anyone that is interested! Please note that LabVIEW for FRC is only supported on Windows 10, and as such so is this guide.
 
 ## Install LabVIEW
 
@@ -24,7 +26,27 @@ Now that LabVIEW is set up, you need to set up Git. But first, make sure you hav
 
 2. Install [Sourcetree](https://www.sourcetreeapp.com/) to your computer. Skip the prompt to sign up for Bitbucket. On the next screen, make sure that Sourcetree finds Git on your computer, and then uncheck the box for Mercurial. Next, enter your name and the email account associated with your GitHub account.
 
-At this point you should have Git installed on your computer and Sourcetree should be configured to use it. You should also have LabVIEW FRC 2021 and CTRE Phoenix Framework installed, and LabVIEW should be configured to save all compiled code seperately from your project files. Your machine is ready to go, but read on to learn how Git works and how to use it on a team.
+Git and Sourcetree should now be installed, and Sourcetree should be set up to use the system Git not embedded Git.
+
+## Configure Sourcetree to use LabVIEW Source Control Tools
+
+LabVIEW professional development environment comes with source control tools which are called as scripts from the command line. LabVIEW FRC ships with the professional environment and will work, but it is important to note that other versions of LabVIEW will not allow you to use the source control tools.
+
+The tools are called as scripts from the command line, and they expect all file paths as absolute file paths. However, Sourcetree and Git both supply relative paths. You need to set up a wrapper script which you use as your source control tool, and that wrapper will expand the relative file paths for LabVIEW.
+
+Long story short, do the following:
+
+1. Make sure that WSL Ubuntu is installed on your computer. You should be able to install it from the [Windows Store](https://www.microsoft.com/store/productId/9N6SVWS3RX71), otherwise check out the [official documentation](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+
+2. Copy ```_LVCompareWrapper.sh``` to ```C:\Program Files (x86)\National Instruments\Shared\LabVIEW Compare\_LVCompareWrapper.sh```
+
+3. Copy ```_LVMergeWrapper.sh``` to ```C:\Program Files (x86)\National Instruments\Shared\LabVIEW Merge\_LVMergeWrapper.sh```
+
+4. Open Sourcetree and select ```Tools >> Options``` and select ```Diff >> External Diff / Merge```. For ```External Diff Tool```, select ```Custom``` and select the ```_LVCompareWrapper.sh``` file that you just copied, and under ```Arguements``` enter ```\"$REMOTE\" \"$LOCAL\"```.
+
+5. Do the same thing for ```Merge Tool```. Choose the ```_LVMergeWrapper.sh``` file that you copied, and for ```Arguements``` enter ```\"$BASE\" \"$REMOTE\" \"$LOCAL\" \"$MERGED\"```.
+
+At this point you should have Git installed on your computer and Sourcetree should be configured to use it. You should also have LabVIEW FRC 2021 and CTRE Phoenix Framework installed, and LabVIEW should be configured to save all compiled code seperately from your project files. Your machine is ready to go, but you should read on to learn how Git works and how to use it on a team.
 
 ## How To Use Source Control With A Team
 
@@ -43,3 +65,5 @@ Go back and make sure that you did not miss a step. If that doesn't work, try th
 1. Make sure that LabVIEW has all of its components installed and licensed. Check out [WpLib's FRC Documentation](https://docs.wpilib.org/en/latest/docs/zero-to-robot/step-2/labview-setup.html) if LabVIEW isn't working, and check out [CTRE's Phoenix Documentation](https://docs.ctre-phoenix.com/en/stable/ch05_PrepWorkstation.html) if you have trouble with the Phoenix Framework.
 
 2. Make sure that Git and Sourcetree are working. Check out [Sourcetree Support](https://support.atlassian.com/sourcetree/). Git is not likely to have issues, but Sourcetree may be having issues finding it.
+
+3. You can also check out [this](https://delacor.com/configuring-hg-or-git-to-use-labview-compare-and-labview-merge/) guide for integrating Git and LabVIEW, and [this](https://endigit.com/2017/11/using-labviews-diff-tool-sourcetree) guide which fixes the problems that Sourcetree has when talking to LabVIEW's source control tools.
